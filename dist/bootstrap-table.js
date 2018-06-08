@@ -1119,7 +1119,10 @@
         if (this.$toolbar.find('.bs-bars').children().length) {
             $('body').append($(this.options.toolbar));
         }
-        this.$toolbar.html('');
+        
+        if (!this.options.buttonsToolbar) {
+            this.$toolbar.html('');
+        }
 
         if (typeof this.options.toolbar === 'string' || typeof this.options.toolbar === 'object') {
             $(sprintf('<div class="bs-bars %s-%s"></div>', bs.pullClass, this.options.toolbarAlign))
@@ -1166,7 +1169,7 @@
                     sprintf(' btn-%s', this.options.iconSize) +
                     '" type="button" name="toggle" aria-label="toggle" title="%s">',
                     this.options.formatToggle()),
-                sprintf('<i class="%s %s"></i>', this.options.iconsPrefix, this.options.icons.toggle),
+                sprintf('<i class="%s %s"></i>', this.options.iconsPrefix, this.options.icons.toggleOff),
                 '</button>');
         }
 

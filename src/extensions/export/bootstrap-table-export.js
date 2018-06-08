@@ -34,17 +34,17 @@
     csv: 'CSV',
     txt: 'TXT',
     sql: 'SQL',
-    doc: 'MS-Word',
-    excel: 'MS-Excel',
-    xlsx: 'MS-Excel (OpenXML)',
-    powerpoint: 'MS-Powerpoint',
+    doc: 'Word',
+    excel: 'Excel',
+    xlsx: 'Excel(xlsx)',
+    powerpoint: 'Powerpoint',
     pdf: 'PDF'
   }
 
   $.extend($.fn.bootstrapTable.defaults, {
     showExport: false,
     exportDataType: 'basic', // basic, all, selected
-    exportTypes: ['json', 'xml', 'csv', 'txt', 'sql', 'excel'],
+    exportTypes: ['excel'],
     exportOptions: {},
     exportFooter: false
   })
