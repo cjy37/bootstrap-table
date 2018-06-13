@@ -5,7 +5,7 @@
   }
   angular.module('bsTable', [])
     .constant('uiBsTables', {bsTables: {}})
-    .directive('bsTableControl', ['uiBsTables', function (uiBsTables) {
+    .directive('bsTableControl', ['$timeout','$compile','uiBsTables', function ($timeout, $compile, uiBsTables) {
     var CONTAINER_SELECTOR = '.bootstrap-table';
     var SCROLLABLE_SELECTOR = '.fixed-table-body';
     var SEARCH_SELECTOR = '.search input';
@@ -27,7 +27,7 @@
     });
     function onScroll () {
       var bsTable = this;
-      var state = bsTable.$s.bsTableControl.state;
+      var state = bsTable.options.state;
       bsTable.$s.$applyAsync(function () {
         state.scroll = bsTable.$el.bootstrapTable('getScrollPosition');
       });
@@ -44,7 +44,7 @@
       .on('sort.bs.table', CONTAINER_SELECTOR+' table', function (evt, sortName, sortOrder) {
         var bsTable = getBsTable(evt.target);
         if (!bsTable) return;
-        var state = bsTable.$s.bsTableControl.state;
+        var state = bsTable.options.state;
         bsTable.$s.$applyAsync(function () {
           state.sortName = sortName;
           state.sortOrder = sortOrder;
@@ -53,7 +53,7 @@
       .on('page-change.bs.table', CONTAINER_SELECTOR+' table', function (evt, pageNumber, pageSize) {
         var bsTable = getBsTable(evt.target);
         if (!bsTable) return;
-        var state = bsTable.$s.bsTableControl.state;
+        var state = bsTable.options.state;
         bsTable.$s.$applyAsync(function () {
           state.pageNumber = pageNumber;
           state.pageSize = pageSize;
@@ -62,7 +62,7 @@
       .on('search.bs.table', CONTAINER_SELECTOR+' table', function (evt, searchText) {
         var bsTable = getBsTable(evt.target);
         if (!bsTable) return;
-        var state = bsTable.$s.bsTableControl.state;
+        var state = bsTable.options.state;
         bsTable.$s.$applyAsync(function () {
           state.searchText = searchText;
         });
@@ -70,7 +70,7 @@
       .on('focus blur', CONTAINER_SELECTOR+' '+SEARCH_SELECTOR, function (evt) {
         var bsTable = getBsTable(evt.target);
         if (!bsTable) return;
-        var state = bsTable.$s.bsTableControl.state;
+        var state = bsTable.options.state;
         bsTable.$s.$applyAsync(function () {
           state.searchHasFocus = $(evt.target).is(':focus');
         });
@@ -78,16 +78,39 @@
 
     return {
       restrict: 'EA',
-      scope: {bsTableControl: '='},
-      link: function ($s, $el) {
+      //scope: {bsTableControl: '='},
+      link: function ($s, $el, attrs) {
+
         var bsTable = bsTables[$s.$id] = {$s: $s, $el: $el};
         $s.instantiated = false;
-        $s.$watch('bsTableControl.options', function (options) {
-          if (!options) options = $s.bsTableControl.options = {};
-          var state = $s.bsTableControl.state || {};
+
+        bsTable.options = $s.$eval(attrs.bsTableControl); // evaluate config from controller
+        //$el.bootstrapTable(bsTable.options);
+
+        // $s.$watch($el, function (bstable) {
+        //   $compile($el.contents())($s);
+        // });
+
+        
+        $el.bind('post-body.bs.table', function () {
+          $timeout(function () {
+            $compile($el.find('tbody')[0])($s);
+          },10);
+        });
+
+        //post-body.bs.table
+        
+        $s.$watch('attrs.bsTableControl', function (options) {
+
+          bsTable.options = $s.$eval(attrs.bsTableControl);
+          if (!bsTable.options) bsTable.options = {};
+
+          //options = $s.$eval(options);
+
+          var state = bsTable.options.state || {};
 
           if ($s.instantiated) $el.bootstrapTable('destroy');
-          $el.bootstrapTable(angular.extend(angular.copy(options), state));
+          $el.bootstrapTable(angular.extend(angular.copy(bsTable.options), state));
           $s.instantiated = true;
 
           // Update the UI for state that isn't settable via options
@@ -95,7 +118,7 @@
           if ('searchHasFocus' in state) $el.closest(CONTAINER_SELECTOR).find(SEARCH_SELECTOR).focus(); // $el gets detached so have to recompute whole chain
         }, true);
         $s.$watch('bsTableControl.state', function (state) {
-          if (!state) state = $s.bsTableControl.state = {};
+          if (!state) state = bsTable.options.state = {};
           $el.trigger('directive-updated.bs.table', [state]);
         }, true);
         $s.$on('$destroy', function () {
