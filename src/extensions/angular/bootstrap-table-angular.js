@@ -19,7 +19,92 @@
       });
       return result;
     }
+    function horizontalScrollBarPlugin ($el){
+        var table = $el;
+        if (table[0].nodeName == 'DIV' && $('table', $el).length == 1)
+            table = $('table', $el);
+        var box = table.parent();
+        var plug = angular.element(document.createElement('div'));
+        var plugDiv = angular.element(document.createElement('div'));
 
+        var boxScrollLeft = 0;
+        var boxWidth = box.width();
+        var tableWidth = table.width();
+
+        //同步列表的宽度
+        plug.css({
+            'position': 'fixed',
+            'display': 'none',
+            'bottom': '0',
+            'left': box.offset().left + 'px',
+            'height': '20px',
+            'width': boxWidth + 'px',
+            'overflow-x': 'auto',
+            'overflow-y': 'hidden'
+        });
+
+        //同步滚动宽度
+        plugDiv.css({
+            'width': tableWidth + 'px',
+            'height': '20px'
+        })
+
+        box.append(plug);
+        plug.append(plugDiv);
+
+        //初始化判断
+        isShowScroll();
+
+        function isShowScroll() {
+            var topValue = box.offset().top;
+            var judgHeight = box.height() + topValue;
+            var winh = $(window).height();
+            var wins = $(window).scrollTop();
+            var scroll = winh + wins;
+            if (scroll >= topValue && scroll < judgHeight) {
+                //如果列表展现在页面上，则显示
+                plug.show();
+                //同步辅助滚动条滚动值
+                plug.scrollLeft(boxScrollLeft);
+            }
+            if (scroll < topValue || scroll >= judgHeight) {
+                //如果列表原滚动条出现或者页面没有到达列表，则隐藏此辅助滚动条
+                plug.hide();
+            }
+        }
+
+        function updata() {
+            if (boxWidth != box.width()) {
+                boxWidth = box.width();
+                plug.css({
+                    'width': boxWidth + 'px'
+                });
+            }
+            if (tableWidth != table.width()) {
+                tableWidth = table.width();
+                plugDiv.css({
+                    'width': tableWidth + 'px'
+                })
+            }
+        }
+
+        $('#JoininBody').scroll(function () { isShowScroll(); updata(); });
+
+        plug.scroll(function () { box.scrollLeft(plug.scrollLeft()); });
+
+        box.scroll(function () { boxScrollLeft = box.scrollLeft(); });
+
+        $(window).resize(function () {
+            plug.css({
+                'left': box.offset().left + 'px',
+                'width': box.width() + 'px'
+            });
+            plugDiv.css({
+                'width': table.width() + 'px'
+            })
+        });
+    }
+    
     $(window).resize(function () {
       $.each(bsTables, function (id, bsTable) {
         bsTable.$el.bootstrapTable('resetView');
@@ -116,6 +201,7 @@
           // Update the UI for state that isn't settable via options
           if ('scroll' in state) $el.bootstrapTable('scrollTo', state.scroll);
           if ('searchHasFocus' in state) $el.closest(CONTAINER_SELECTOR).find(SEARCH_SELECTOR).focus(); // $el gets detached so have to recompute whole chain
+          horizontalScrollBarPlugin($el);
         }, true);
         $s.$watch('bsTableControl.state', function (state) {
           if (!state) state = bsTable.options.state = {};
