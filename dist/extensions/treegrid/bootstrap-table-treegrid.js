@@ -13,8 +13,15 @@
             var obj = {};
             $.each(data, function (i, item) {
                 var pid = item[that.parentIdField];
-                if (!obj.hasOwnProperty(pid))
+
+                if (typeof pid == 'object') {
+                    item[that.parentIdField] = pid = pid[that.options.idField];
+                }
+
+                if (!obj.hasOwnProperty(pid)) {
                     obj[pid] = [];
+                }
+
                 obj[pid].push(item);
             });
             that.treePidData = obj;
@@ -29,13 +36,15 @@
             var that = this;
             var pid = row[that.options.parentIdField];
 
-            if (!pid || pid==='')
+            if (!pid || pid=='')
                 return true;
-            else if (typeof pid === 'string' && pid === '0')
+            else if (typeof pid == 'string' && pid == '0')
                 return true;
-            else if (typeof pid === 'object' && pid[that.options.parentIdField]==='0')
+            else if (typeof pid == 'object' && pid[that.options.idField]=='0')
                 return true;
-            else 
+            else if (window.hasOwnProperty('ubiId') && window.ubiId == row[that.options.idField])
+                return true;
+            else
                 return false;
         }
     });
