@@ -8,19 +8,35 @@
         treeShowField: null,
         idField: 'id',
         parentIdField: 'pid',
+        onPreBody: function (data) {
+            var that = this;
+            var obj = {};
+            $.each(data, function (i, item) {
+                var pid = item[that.parentIdField];
+                if (!obj.hasOwnProperty(pid))
+                    obj[pid] = [];
+                obj[pid].push(item);
+            });
+            that.treePidData = obj;
+        },
         onGetNodes: function (row, data) {
             var that = this;
-            var nodes = [];
-            $.each(data, function (i, item) {
-                if (row[that.options.idField] === item[that.options.parentIdField]) {
-                    nodes.push(item);
-                }
-            });
-            return nodes;
+            var pid = row[that.options.idField];
+            var nodes = that.options.treePidData[pid];
+            return nodes || [];
         },
         onCheckRoot: function (row, data) {
             var that = this;
-            return !row[that.options.parentIdField];
+            var pid = row[that.options.parentIdField];
+
+            if (!pid || pid==='')
+                return true;
+            else if (typeof pid === 'string' && pid === '0')
+                return true;
+            else if (typeof pid === 'object' && pid[that.options.parentIdField]==='0')
+                return true;
+            else 
+                return false;
         }
     });
 
