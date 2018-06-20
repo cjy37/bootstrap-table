@@ -15,9 +15,12 @@
                 var pid = item[that.parentIdField];
 
                 if (typeof pid == 'object') {
-                    item[that.parentIdField] = pid = pid[that.options.idField];
+                    item[that.parentIdField] = pid = pid[that.idField];
                 }
-
+                
+                if (!pid || pid == '' || pid == '0')
+                    continue;
+                
                 if (!obj.hasOwnProperty(pid)) {
                     obj[pid] = [];
                 }
@@ -36,11 +39,13 @@
             var that = this;
             var pid = row[that.options.parentIdField];
 
-            if (!pid || pid=='')
+            if (!pid || pid == '')
                 return true;
             else if (typeof pid == 'string' && pid == '0')
                 return true;
-            else if (typeof pid == 'object' && pid[that.options.idField]=='0')
+            else if (that.options.treeRootId && pid == that.options.treeRootId)
+                return true;
+            else if (typeof pid == 'object' && pid[that.options.idField] == '0')
                 return true;
             else if (window.hasOwnProperty('ubiId') && window.ubiId == row[that.options.idField])
                 return true;
