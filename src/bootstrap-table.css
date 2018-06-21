@@ -315,3 +315,11 @@ div.fixed-table-scroll-outer {
     width: 100%!important;
     background: #FFF;
 }
+.aHide {
+  opacity: 0;
+  z-index: -1;
+  animation: ht-hide 0.2s;
+  -moz-animation: ht-hide 0.2s;
+  -webkit-animation: ht-hide 0.2s;
+  -o-animation: ht-hide 0.2s
+}

@@ -19,7 +19,7 @@
                 }
                 
                 if (!pid || pid == '' || pid == '0')
-                    continue;
+                    return;
                 
                 if (!obj.hasOwnProperty(pid)) {
                     obj[pid] = [];
