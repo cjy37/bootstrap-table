@@ -34,7 +34,6 @@
         //同步列表的宽度
         plug.css({
             'position': 'fixed',
-            'display': 'none',
             'bottom': '0',
             'left': box.offset().left + 'px',
             'height': '20px',
