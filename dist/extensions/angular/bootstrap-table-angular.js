@@ -19,7 +19,7 @@
       });
       return result;
     }
-    function horizontalScrollBarPlugin ($el){
+    function horizontalScrollBarPlugin ($el, options){
         var table = $el;
         if (table[0].nodeName == 'DIV' && $('table', $el).length == 1)
             table = $('table', $el);
@@ -28,6 +28,7 @@
         var plugDiv = angular.element(document.createElement('div'));
 
         var boxScrollLeft = 0;
+        var scrollDom = options.scrollDom || '#JoininBody';
         var boxWidth = box.width();
         var tableWidth = table.width();
 
@@ -89,7 +90,7 @@
             }
         }
 
-        $('#JoininBody').scroll(function () { isShowScroll(); updata(); });
+        $(scrollDom=='document'?document:scrollDom).scroll(function () { isShowScroll(); updata(); });
 
         plug.scroll(function () { box.scrollLeft(plug.scrollLeft()); });
 
@@ -202,7 +203,7 @@
           // Update the UI for state that isn't settable via options
           if ('scroll' in state) $el.bootstrapTable('scrollTo', state.scroll);
           if ('searchHasFocus' in state) $el.closest(CONTAINER_SELECTOR).find(SEARCH_SELECTOR).focus(); // $el gets detached so have to recompute whole chain
-          horizontalScrollBarPlugin($el);
+          horizontalScrollBarPlugin($el, bsTable.options);
         }, true);
         $s.$watch('bsTableControl.state', function (state) {
           if (!state) state = bsTable.options.state = {};
