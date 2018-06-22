@@ -12,11 +12,19 @@
 .fix-sticky thead {
     background: #fff;
 }
-
+.fix-sticky thead th:first-child:not([data-not-first-th]) {
+    border-left: 1px solid #ddd;
+}
 .fix-sticky thead th,
 .fix-sticky thead th:first-child {
     border-left: 0;
     border-right: 0;
-    border-bottom: 1px solid #eee;
     border-radius: 0;
+    line-height: 35px;
+    height: 35px;
+    background-color: #F1F4F6;
+    border-bottom: 1px solid #ddd;
+    padding: 0 10px;
+    vertical-align: middle;
+    line-height: 1.42857143;
 }
