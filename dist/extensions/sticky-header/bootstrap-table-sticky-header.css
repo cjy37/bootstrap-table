@@ -24,7 +24,7 @@
     height: 35px;
     background-color: #F1F4F6;
     border-bottom: 1px solid #ddd;
-    padding: 0 10px;
+    padding: inherit;
     vertical-align: middle;
     line-height: 1.42857143;
 }

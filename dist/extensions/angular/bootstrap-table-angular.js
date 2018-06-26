@@ -29,6 +29,7 @@
 
         var boxScrollLeft = 0;
         var scrollDom = options.scrollDom || '#JoininBody';
+        var scroller = scrollDom == '#JoininBody' ? scrollDom : window;
         var boxWidth = box.width();
         var tableWidth = table.width();
 
@@ -56,10 +57,10 @@
         isShowScroll();
 
         function isShowScroll() {
-            var topValue = box.offset().top;
+            var topValue = box[0].offsetTop; //box.offset().top;
             var judgHeight = box.height() + topValue;
-            var winh = $(window).height();
-            var wins = $(window).scrollTop();
+            var winh = $(scroller).height();
+            var wins = $(scroller).scrollTop();
             var scroll = winh + wins;
             if (scroll >= topValue && scroll < judgHeight) {
                 //如果列表展现在页面上，则显示
@@ -90,13 +91,13 @@
             }
         }
 
-        $(scrollDom=='document'?document:scrollDom).scroll(function () { isShowScroll(); updata(); });
+        $(scroller).scroll(function () { isShowScroll(); updata(); });
 
         plug.scroll(function () { box.scrollLeft(plug.scrollLeft()); });
 
         box.scroll(function () { boxScrollLeft = box.scrollLeft(); });
 
-        $(window).resize(function () {
+        $(scroller).resize(function () {
             plug.css({
                 'left': box.offset().left + 'px',
                 'width': box.width() + 'px'

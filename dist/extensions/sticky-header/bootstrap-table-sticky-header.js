@@ -51,9 +51,11 @@
         // avoid id conflict
         this.$stickyHeader.removeAttr('id');
 
-        // render sticky on window scroll or resize
-        $(window).on('resize.'+table_id, table, render_sticky_header);
-        $(window).on('scroll.'+table_id, table, render_sticky_header);
+        // render sticky on scroller scroll or resize
+        var scrollDom = that.options.scrollDom || '#JoininBody';
+        var scroller = scrollDom == '#JoininBody' ? scrollDom : window;
+        $(scroller).on('resize.'+table_id, table, render_sticky_header);
+        $(scroller).on('scroll.'+table_id, table, render_sticky_header);
         // render sticky when table scroll left-right
         table.closest('.fixed-table-container').find('.fixed-table-body').on('scroll.'+table_id, table, match_position_x);
 
@@ -67,23 +69,24 @@
             var table_header_id = table.find('thead').attr('id');
             // console.log('render_sticky_header for > '+table_header_id);
             if (table.length < 1 || $('#'+table_id).length < 1){
-                // turn off window listeners
-                $(window).off('resize.'+table_id);
-                $(window).off('scroll.'+table_id);
+                // turn off scroller listeners
+                $(scroller).off('resize.'+table_id);
+                $(scroller).off('scroll.'+table_id);
                 table.closest('.fixed-table-container').find('.fixed-table-body').off('scroll.'+table_id);
                 return;
             }
             // get header height
             var header_height = '0';
             if (that.options.stickyHeaderOffsetY) header_height = that.options.stickyHeaderOffsetY.replace('px','');
-            // window scroll top
-            var t = $(window).scrollTop();
+            // scroller scroll top
+            var t = $(scroller).scrollTop();
+            //var h = $(scroller).height();
             // top anchor scroll position, minus header height
             var e = $("#"+anchor_begin_id).offset().top - header_height;
             // bottom anchor scroll position, minus header height, minus sticky height
-            var e_end = $("#"+anchor_end_id).offset().top - header_height - $('#'+table_header_id).css('height').replace('px','');
+            var e_end = $("#"+anchor_end_id)[0].offsetTop; //$("#"+anchor_end_id).offset().top;// - header_height - $('#'+table_header_id).css('height').replace('px','');
             // show sticky when top anchor touches header, and when bottom anchor not exceeded
-            if (t > e && t <= e_end) {
+            if (t > e && t < e_end) {
                 // ensure clone and source column widths are the same
                 $.each( that.$stickyHeader.find('tr').eq(0).find('th'), function (index, item) {
                     $(item).css('min-width', $('#'+table_header_id+' tr').eq(0).find('th').eq(index).css('width'));
