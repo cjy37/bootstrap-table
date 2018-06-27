@@ -57,19 +57,21 @@
         isShowScroll();
 
         function isShowScroll() {
-            var topValue = box[0].offsetTop; //box.offset().top;
-            var judgHeight = box.height() + topValue;
+            var topValue = box.offset().top;
+            var absTop = Math.abs(topValue);
+            var subBoxBottom = box.height() + topValue;
             var winh = $(scroller).height();
-            var wins = $(scroller).scrollTop();
-            var scroll = winh + wins;
-            if (scroll >= topValue && scroll < judgHeight) {
+            var wins = $(scroller).offset().top;
+            var scrollBottom = winh + wins;
+            if (scrollBottom > topValue && scrollBottom < subBoxBottom) {
                 //如果列表展现在页面上，则显示
                 //plug.show();
                 plug.removeClass('aHide');
                 //同步辅助滚动条滚动值
                 plug.scrollLeft(boxScrollLeft);
             }
-            if (scroll < topValue || scroll >= judgHeight) {
+            //if (scrollBottom < topValue || scrollBottom >= subBoxBottom) {
+            else {
                 //如果列表原滚动条出现或者页面没有到达列表，则隐藏此辅助滚动条
                 //plug.hide();
                 plug.addClass('aHide');

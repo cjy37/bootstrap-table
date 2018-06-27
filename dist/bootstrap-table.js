@@ -1828,6 +1828,14 @@
             value = calculateObjectValue(column,
                 that.header.formatters[j], [value_, item, i, field], value_);
 
+            // 需要把值格式化成提示, 要求提示或者内容较长
+            if (_.isString(value) && (title_ == 'true' || value.length > 5)) {
+                if (value.indexOf('<') > -1)
+                    title_ = sprintf(' title="%s"', $("<div>").html(value).text());
+                else 
+                    title_ = sprintf(' title="%s"', value);
+            }
+
             if (item['_' + field + '_data'] && !$.isEmptyObject(item['_' + field + '_data'])) {
                 $.each(item['_' + field + '_data'], function(k, v) {
                     // ignore data-index

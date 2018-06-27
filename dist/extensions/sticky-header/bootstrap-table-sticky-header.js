@@ -82,11 +82,11 @@
             var t = $(scroller).scrollTop();
             //var h = $(scroller).height();
             // top anchor scroll position, minus header height
-            var e = $("#"+anchor_begin_id).offset().top - header_height;
+            var e = $("#"+anchor_begin_id).offset().top;// + header_height;
             // bottom anchor scroll position, minus header height, minus sticky height
             var e_end = $("#"+anchor_end_id)[0].offsetTop; //$("#"+anchor_end_id).offset().top;// - header_height - $('#'+table_header_id).css('height').replace('px','');
             // show sticky when top anchor touches header, and when bottom anchor not exceeded
-            if (t > e && t < e_end) {
+            if (header_height > e && t < e_end) {
                 // ensure clone and source column widths are the same
                 $.each( that.$stickyHeader.find('tr').eq(0).find('th'), function (index, item) {
                     $(item).css('min-width', $('#'+table_header_id+' tr').eq(0).find('th').eq(index).css('width'));
