@@ -14,7 +14,7 @@
             $.each(data, function (i, item) {
                 var pid = item[that.parentIdField];
 
-                if (typeof pid == 'object') {
+                if (typeof pid == 'object' && pid) {
                     item[that.parentIdField] = pid = pid[that.idField];
                 }
                 
