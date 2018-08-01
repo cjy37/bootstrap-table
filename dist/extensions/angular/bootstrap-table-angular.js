@@ -192,21 +192,24 @@
         
         $s.$watch('attrs.bsTableControl', function (options) {
 
-          bsTable.options = $s.$eval(attrs.bsTableControl);
-          if (!bsTable.options) bsTable.options = {};
+          $timeout(function(){
+              bsTable.options = $s.$eval(attrs.bsTableControl);
+              if (!bsTable.options) bsTable.options = {};
 
-          //options = $s.$eval(options);
+              //options = $s.$eval(options);
 
-          var state = bsTable.options.state || {};
+              var state = bsTable.options.state || {};
 
-          if ($s.instantiated) $el.bootstrapTable('destroy');
-          $el.bootstrapTable(angular.extend(angular.copy(bsTable.options), state));
-          $s.instantiated = true;
+              if ($s.instantiated) $el.bootstrapTable('destroy');
+              $el.bootstrapTable(angular.extend(angular.copy(bsTable.options), state));
+              $s.instantiated = true;
 
-          // Update the UI for state that isn't settable via options
-          if ('scroll' in state) $el.bootstrapTable('scrollTo', state.scroll);
-          if ('searchHasFocus' in state) $el.closest(CONTAINER_SELECTOR).find(SEARCH_SELECTOR).focus(); // $el gets detached so have to recompute whole chain
-          horizontalScrollBarPlugin($el, bsTable.options);
+              // Update the UI for state that isn't settable via options
+              if ('scroll' in state) $el.bootstrapTable('scrollTo', state.scroll);
+              if ('searchHasFocus' in state) $el.closest(CONTAINER_SELECTOR).find(SEARCH_SELECTOR).focus(); // $el gets detached so have to recompute whole chain
+              horizontalScrollBarPlugin($el, bsTable.options);
+          }, 20);
+          
         }, true);
         $s.$watch('bsTableControl.state', function (state) {
           if (!state) state = bsTable.options.state = {};

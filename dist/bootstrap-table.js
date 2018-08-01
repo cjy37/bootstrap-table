@@ -1120,9 +1120,9 @@
             $('body').append($(this.options.toolbar));
         }
         
-        if (!this.options.buttonsToolbar) {
-            this.$toolbar.html('');
-        }
+        //if (!this.options.buttonsToolbar) {
+        this.$toolbar.html('');
+        //}
 
         if (typeof this.options.toolbar === 'string' || typeof this.options.toolbar === 'object') {
             $(sprintf('<div class="bs-bars %s-%s"></div>', bs.pullClass, this.options.toolbarAlign))
